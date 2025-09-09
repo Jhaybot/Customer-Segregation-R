@@ -29,16 +29,15 @@ The goal is to identify distinct customer groups to support **targeted marketing
 - Standardize features (`scale()`) to remove unit differences  
 
 ### 3. Determine Optimal Clusters
-- Use **Elbow Method (WSS)**  
-- Chose `k = 5` as optimal  
+- I UseD **Elbow Method (WSS)**  
+- fom the plot i decided to Choose `k = 5` as optimal  
 
 ### 4. Run K-Means
-set.seed(123) # reproducibility
+set.seed(123) (reproducibility)
 km <- kmeans(df_scaled, centers = 5, nstart = 25)
-5. Visualize Clusters
 
-fviz_cluster() used to plot clusters in 2D
-
+### 5. Visualize Clusters
+fviz_cluster() was used to plot clusters in 2D
 Ellipses show cluster spread and separation
 
 ### 6. Interpret Results
@@ -62,11 +61,6 @@ Clone this repo or download the .Rmd notebook.
 Place Mall_Customers.csv in your working directory.
 Open Customer-Segmentation-in-R.Rmd in RStudio.
 Knit to HTML/Word/PDF for a full report.
-
-📌 Future Work
-Include more features (Age, Gender) for richer clusters
-Try other clustering methods (Hierarchical, DBSCAN)
-Deploy insights into a dashboard
 
 🖊️ Author
 
