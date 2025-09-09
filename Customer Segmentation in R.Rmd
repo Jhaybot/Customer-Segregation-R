@@ -1,0 +1,129 @@
+---
+title: "Customer Segregation in R"
+author: "Olusanya Joshua"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Introduction
+
+In this notebook, I performed customer segmentation using the Mall Customers dataset obtained from kaggle data repository.\
+I used the **K-Means clustering** to group customers based on their **Annual Income** and **Spending Score**.
+
+------------------------------------------------------------------------
+
+# Step 1: Load Libraries
+
+```{r}
+library(tidyverse)
+library(cluster)
+library(factoextra)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Step 2 : Loading the dataset
+
+```{r}
+data <- read.csv("C:/Users/asus/OneDrive/Desktop/my portfolio projects/Mall_Customers.csv")
+head(data)
+```
+
+# Step 3 : Feature Selection
+
+```{r}
+df <- data %>% select(Annual.Income..k..,Spending.Score..1.100.)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Step 4 : Scaling the data and using the Elbow method
+
+```{r}
+df_scaled = scale(df)
+fviz_nbclust(df_scaled, kmeans, method ='wss') # elbow method
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Step 5 : clustering
+
+```{r}
+set.seed(123)
+km <- kmeans(df_scaled, center = 5, nstart=25)
+km
+
+df_clustered <- data %>% mutate(Cluster= factor(km$cluster))
+df_clustered # to view clustered table
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Step 6 : Visualization
+
+```{r}
+fviz_cluster(km, df_scaled,
+             ellipse.type = 'norm',
+             geom ='point',
+             palette ='jco',
+             ggtheme =theme_minimal())
+```
+
+```{r}
+library(ggplot2)
+
+# Calculate summary stats per cluster
+cluster_summary <- df_clustered %>%
+  group_by(Cluster) %>%
+  summarise(
+    Avg_Income = mean(Annual.Income..k..),
+    Avg_Spending = mean(Spending.Score..1.100.),
+    Count = n()
+  )
+```
+
+# Bar plot: Average Income per Cluster
+
+```{r}
+ggplot(cluster_summary, aes(x = Cluster, y = Avg_Income, fill = Cluster)) +
+  geom_col() +
+  theme_minimal() +
+  labs(title = "Average Income by Cluster",
+       x = "Cluster",
+       y = "Average Annual Income (k$)")
+```
+
+# Bar plot: Average Spending per Cluster
+
+```{r}
+ggplot(cluster_summary, aes(x = Cluster, y = Avg_Spending, fill = Cluster)) +
+  geom_col() +
+  theme_minimal() +
+  labs(title = "Average Spending Score by Cluster",
+       x = "Cluster",
+       y = "Average Spending Score (1–100)")
+```
+
+# Summary
+
+X-axis (Annual Income..k..) → left = low income, right = high income
+
+Y-axis (Spending Score..1.100.) → bottom = low spending, top = high spending
+
+Each color/shape = one cluster, ellipse shows its spread
+
+**Cluster 1 (dark blue dots, middle-left)**
+
+Middle income, middle spending Balanced customers, average behavior Strategy: maintain engagement
+
+**Cluster 2 (yellow triangles, bottom-left)**
+
+Low income, low spending Budget-conscious customers, low profitability Strategy: offer discounts, low-cost promotions
+
+**Cluster 3 (gray squares, top-left)**
+
+Low income, high spending Value seekers / impulsive spenders Strategy: promote affordable luxury, seasonal offers
+
+**Cluster 4 (red crosses, bottom-right)**
+
+High income, low spending Wealthy but cautious customers Strategy: targeted premium campaigns, loyalty programs
+
+**Cluster 5 (light blue squares with border, top-right)**
+
+High income, high spending Premium/VIP customers Strategy: exclusive offers, VIP programs, retain at all costs
