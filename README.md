@@ -29,16 +29,16 @@ The goal is to identify distinct customer groups to support **targeted marketing
 - Standardize features (`scale()`) to remove unit differences  
 
 ### 3. Determine Optimal Clusters
-- I UseD **Elbow Method (WSS)**  
-- fom the plot i decided to Choose `k = 5` as optimal  
+- I Used **Elbow Method (WSS)**  
+- From the plot i decided to Choose `k = 5` as optimal  
 
 ### 4. Run K-Means
 set.seed(123) (reproducibility)
 km <- kmeans(df_scaled, centers = 5, nstart = 25)
 
 ### 5. Visualize Clusters
-fviz_cluster() was used to plot clusters in 2D
-Ellipses show cluster spread and separation
+I used fviz_cluster() to plot clusters in 2D
+The Ellipses show cluster spread and separation
 
 ### 6. Interpret Results
 
